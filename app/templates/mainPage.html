@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% block css %}
+
+<style>
+  /* === Base Styles === */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: linear-gradient(90deg, rgba(12, 100, 135, 1) 0%, rgba(194, 70, 70, 1) 27%, rgba(160, 210, 109, 1) 76%, rgba(237, 221, 83, 1) 100%);
+  }
+
+  /* === User Info Section === */
+  .user-acc {
+    text-align: center;
+    padding: 10px;
+  }
+
+  .user-acc h1 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #d9e7ed;
+  }
+
+  /* === Form Container === */
+  .user-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 15px;
+    background: linear-gradient(90deg, rgb(33, 134, 173) 0%, rgb(181, 40, 40) 27%, rgb(178, 252, 105) 76%, rgb(227, 211, 66) 100%);
+  }
+
+  .user-box h1 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .box {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+  .box input,
+  .box textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px dashed #000;
+    border-radius: 4px;
+  }
+
+  .box .btn {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* === Button Group === */
+  .btn-grp {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px 15px;
+  }
+
+  /* === Search Section === */
+  .search_item {
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+  }
+
+  .search_item input {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .search_item button {
+    margin-top: 5px;
+    width: 100%;
+    padding: 8px;
+    background-color: blueviolet;
+    color: wheat;
+    border: none;
+    border-radius: 4px;
+  }
+
+  /* === Query Cards === */
+  .show-queary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 300px;
+    background: linear-gradient(90deg, rgb(85, 119, 133) 0%, rgb(149, 82, 82) 27%, rgb(108, 143, 74) 76%);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .card .btn {
+    margin-top: 10px;
+  }
+
+  /* === Responsive Adjustments === */
+  @media (max-width: 768px) {
+    .btn-grp {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .box {
+      padding: 15px;
+    }
+
+    .user-box h1 {
+      font-size: 1.3rem;
+    }
+
+    .user-acc h1 {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .user-box h1 {
+      font-size: 1.1rem;
+    }
+
+    .card {
+      width: 90%;
+    }
+  }
+</style>
+
+
+{% endblock %}
+{% block body %}
+  <div class="btn-grp">
+    <div class="logout">
+    <form action="{% url 'logout_page' %}" method="POST">
+      {% csrf_token %}
+      <button type="submit"class="btn btn-danger">Logout</button>
+    </form>
+    </div>
+    <div class="admin">
+      <a href="{% url 'admin:index' %}" class="btn btn-dark">Admin Panel</a>
+    </div>
+    <div class="food-section">
+       <a href="{% url "food_section" %}" class="btn btn-warning">Food</a>
+    </div>
+    <div class="home-btn">
+       <a href="{% url "mysite" %}" class="btn btn-success">Main Page</a>
+    </div>
+    
+    
+  </div>
+  {% if request.user.is_authenticated %}
+    <div class="user-acc">
+      <h1>This acc is Created by {{ request.user.email }}</h1>
+    </div>
+  {% endif %}
+
+  <!--      
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Upload</button>
+    </form> 
+         -->
+
+  <div class="user-box">
+    <h1>USER QUERY</h1>
+    <div class="box">
+      <form action="{% url 'user_queary' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-floating mb-2">
+          <input type="text" name="name" class="form-control" style="height: 12px;" id="floatingInput" placeholder="name" required />
+          <label for="floatingInput">Enter Your Name</label>
+        </div>
+        <div class="form-floating mb-2">
+          <input type="text" name="sub-q" class="form-control" id="floatingPassword" placeholder="query title" required />
+          <label for="floatingPassword">query subject</label>
+        </div>
+        <div class="form-floating">
+          <textarea class="form-control" name="details" placeholder="Leave a queary here" id="floatingTextarea" rows="10" required></textarea>
+          <label for="floatingTextarea">details</label>
+        </div>
+        <div class="btn">
+          <button type="submit" class="btn btn-success">Submits</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="search_item">
+    <form action="{% url 'search_item_queary' %}" method="POST" class="d-flex" role="search">
+      {% csrf_token %}
+      <input name="search_item" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    
+  </div>
+
+  <div class="show-queary">
+      {% for i in show_data %}
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ forloop.counter }}: {{ i.name }}</h5>
+          <p class="card-text">{{ i.queary_sub }}</p>
+          <p class="card-text">{{ i.details }}</p>
+          <a href="{% url 'user_queary_delete' i.id %}" class="btn btn-primary">Delete</a>
+          <!-- Edit section -->
+
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ i.id }}">Edit</button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal{{ i.id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ i.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel{{ i.id }}">Update Your queary</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="{% url 'user_queary_edit' i.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-floating mb-2">
+                      <input type="text" name="name" value="{{i.name}}" class="form-control" style="height: 12px;" id="floatingInput{{ i.id }}" placeholder="name" />
+                      <label for="floatingInput{{i.id}}">Edit Your Name</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                      <input type="text" value="{{i.queary_sub}}" name="sub-q" class="form-control" id="floatingPassword{{ i.id }}" placeholder="query title"  />
+                      <label for="floatingPassword{{i.id}}">Edit query subject</label>
+                    </div>
+                    <div class="form-floating">
+                      <textarea class="form-control" name="details" placeholder="Leave a queary here" id="floatingTextarea{{ i.id }}" rows="20">{{i.details}}</textarea>
+                      <label for="floatingTextarea{{i.id}}">Edit details</label>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  
+  </div>
+{% endblock %}
