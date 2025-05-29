@@ -56,4 +56,31 @@ def weather_check(request):
             return redirect('weather_check')
     return render(request,'portfolio/weathercheck.html')
 
+def text_analyse(request):
+    if request.method == "POST":
+        text = request.POST.get('text', '')
+        uppercase = request.POST.get('uppercase', 'off')
+        lowercase = request.POST.get('lowercase', 'off')
+        capitalize = request.POST.get('capitalize', 'off')
+        removePunctuation = request.POST.get('removePunctuation', 'off')
 
+        # 1. Remove punctuation
+        if removePunctuation == 'on':
+            punctuation = '''!@#$%^&*()-_=+[]{};:'"\|,.<>?/`~'''
+            text = ''.join(char for char in text if char not in punctuation)
+
+        # 2. Apply case transformation based on priority
+        if capitalize == 'on':
+            text = text.capitalize()
+        elif lowercase == 'on':
+            text = text.lower()
+        elif uppercase == 'on':
+            text = text.upper()
+
+        context = {'analyse': text}
+        return render(request, 'portfolio/textresult.html', context)
+
+    return render(request, 'portfolio/text_index.html')
+
+def text_result(request):
+    return render(request,'portfolio/textresukt.html')
