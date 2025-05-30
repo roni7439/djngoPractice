@@ -8,4 +8,9 @@ urlpatterns = [
     path('weather_check/',views.weather_check,name='weather_check'),
     path('text_analyse/',views.text_analyse,name='text_analyse'),
     path('text_result/',views.text_result,name='text_result'),
+    path('management_page/',views.management_page,name='management_page'),
+    path('management_student_login',views.management_student_login,name='management_student_login'),
+    path('management_teacher_login',views.management_teacher_login,name='management_teacher_login'),
+    path('management_student_signup/',views.management_student_signup,name='management_student_signup'),
+    path('management_teacher_signup/',views.management_teacher_signup,name='management_teacher_signup'),
 ]

@@ -2,7 +2,9 @@ from django.shortcuts import render,redirect
 from .models import contactus
 from django.contrib import messages
 import requests
+from django.contrib.auth import authenticate, login
 
+from .models import CustomUser
 # Create your views here.
 def main_page(request):
     return render(request,'portfolio/main_page.html')
@@ -84,3 +86,91 @@ def text_analyse(request):
 
 def text_result(request):
     return render(request,'portfolio/textresukt.html')
+
+def management_page(request):
+    return render(request,'portfolio/management_page.html')
+
+def management_student_login(request):
+    if request.method=="POST":
+        email=request.POST.get('email')
+        password=request.POST.get('password')
+        
+        user=authenticate(request,email=email,password=password)
+        
+        if user is not None:
+            login(request,user)
+            return redirect('management_page')
+        else:
+            messages.error(request,"Invaild Email/Password!!")
+            return redirect('management_student_login')
+    return render(request,'portfolio/management_st_login.html')
+
+def management_teacher_login(request):
+    if request.method=='POST':
+        staff_email=request.POST.get('s-email')
+        password=request.POST.get('password')
+        
+        user=authenticate(request,email=staff_email,password=password)
+        
+        if user is not None:
+            login(request,user)
+            return redirect('main_page')
+        else:
+            messages.error(request,"Invaild Email/Password!!")
+            return redirect('management_student_login')
+        
+    return render(request,'portfolio/management_te_login.html')
+
+def management_student_signup(request):
+    if request.method=="POST":
+        name=request.POST.get('name')
+        clg_roll=request.POST.get('clg-roll')
+        clg_reg=request.POST.get('clg-reg')
+        email=request.POST.get('email')
+        password=request.POST.get('password')
+        
+        if CustomUser.objects.filter(clg_roll=clg_roll).exists():
+            messages.error(request,"Roll Number already exits")
+            return redirect('management_student_signup')
+        if CustomUser.objects.filter(email=email).exists():
+            messages.error(request,"Email already exits")
+            return redirect('management_student_signup')
+            
+        user=CustomUser.objects.create_user(
+            name=name,           
+            clg_roll=clg_roll,
+            clg_reg=clg_reg,
+            email=email,
+            password=password
+        )
+        user.save()
+        messages.success(request,"Acc Created")
+        return redirect('management_student_login')
+        
+    return render(request,'portfolio/management_st_signup.html') 
+ 
+def management_teacher_signup(request):
+    if request.method=="POST":
+        stf_name=request.POST.get('t-name')
+        stf_id=request.POST.get('stf-id')
+        stf_email=request.POST.get('stf-email')
+        password=request.POST.get('password')
+        
+        if CustomUser.objects.filter(s_id=stf_id).exists():
+            messages.error(request,"Staff Id already exits")
+            return redirect('management_teacher_signup')
+        
+        if CustomUser.objects.filter(email=stf_email).exists():
+            messages.error(request,"Staff email Id already exits")
+            return redirect('management_teacher_signup')
+        
+        user=CustomUser.objects.create_user(
+            s_name=stf_name,
+            email=stf_email,
+            s_id=stf_id,
+            password=password,           
+        )
+        user.save()
+        messages.success(request,"Teacher acc Created")
+        return redirect('management_teacher_login')
+    return render(request,'portfolio/management_te_signup.html')
