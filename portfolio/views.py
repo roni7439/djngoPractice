@@ -104,8 +104,6 @@ def management_student_login(request):
         
         if user is not None:
             login(request,user)
-            return redirect('management_page')
-
             return redirect('student_management')
 
         else:
