@@ -13,11 +13,10 @@ urlpatterns = [
     path('management_teacher_login',views.management_teacher_login,name='management_teacher_login'),
     path('management_student_signup/',views.management_student_signup,name='management_student_signup'),
     path('management_teacher_signup/',views.management_teacher_signup,name='management_teacher_signup'),
-<<<<<<< HEAD
-=======
+
     path('student_management/',views.student_management,name='student_management'),
     path('accademic_details/',views.accademic_details,name='accademic_details'),
     path('logout_page/',views.logout_page,name='logout_page'),
     
->>>>>>> a651631 (Initial commit: add Django project files)
+
 ]

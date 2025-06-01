@@ -2,12 +2,12 @@ from django.shortcuts import render,redirect
 from .models import contactus,acc_details
 from django.contrib import messages
 import requests
-<<<<<<< HEAD
+
 from django.contrib.auth import authenticate, login
-=======
+
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
->>>>>>> a651631 (Initial commit: add Django project files)
+
 
 from .models import CustomUser
 # Create your views here.
@@ -104,20 +104,15 @@ def management_student_login(request):
         
         if user is not None:
             login(request,user)
-<<<<<<< HEAD
             return redirect('management_page')
-=======
+
             return redirect('student_management')
->>>>>>> a651631 (Initial commit: add Django project files)
+
         else:
             messages.error(request,"Invaild Email/Password!!")
             return redirect('management_student_login')
     return render(request,'portfolio/management_st_login.html')
 
-<<<<<<< HEAD
-=======
-
->>>>>>> a651631 (Initial commit: add Django project files)
 def management_teacher_login(request):
     if request.method=='POST':
         staff_email=request.POST.get('s-email')
@@ -187,8 +182,7 @@ def management_teacher_signup(request):
         messages.success(request,"Teacher acc Created")
         return redirect('management_teacher_login')
     return render(request,'portfolio/management_te_signup.html')
-<<<<<<< HEAD
-=======
+
 
 @login_required(login_url='management_student_login')
 def student_management(request):
@@ -229,4 +223,4 @@ def accademic_details(request):
 def logout_page(request):
     logout(request)
     return redirect('management_student_login')
->>>>>>> a651631 (Initial commit: add Django project files)
+
