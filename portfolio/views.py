@@ -1,8 +1,13 @@
 from django.shortcuts import render,redirect
-from .models import contactus
+from .models import contactus,acc_details
 from django.contrib import messages
 import requests
+<<<<<<< HEAD
 from django.contrib.auth import authenticate, login
+=======
+from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth.decorators import login_required
+>>>>>>> a651631 (Initial commit: add Django project files)
 
 from .models import CustomUser
 # Create your views here.
@@ -99,12 +104,20 @@ def management_student_login(request):
         
         if user is not None:
             login(request,user)
+<<<<<<< HEAD
             return redirect('management_page')
+=======
+            return redirect('student_management')
+>>>>>>> a651631 (Initial commit: add Django project files)
         else:
             messages.error(request,"Invaild Email/Password!!")
             return redirect('management_student_login')
     return render(request,'portfolio/management_st_login.html')
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a651631 (Initial commit: add Django project files)
 def management_teacher_login(request):
     if request.method=='POST':
         staff_email=request.POST.get('s-email')
@@ -174,3 +187,46 @@ def management_teacher_signup(request):
         messages.success(request,"Teacher acc Created")
         return redirect('management_teacher_login')
     return render(request,'portfolio/management_te_signup.html')
+<<<<<<< HEAD
+=======
+
+@login_required(login_url='management_student_login')
+def student_management(request):
+    new_acc_info=acc_details.objects.filter(user=request.user)
+    context={
+        'new_acc_info': new_acc_info,
+    }
+    return render(request,'portfolio/student_mg_page.html',context)
+
+
+@login_required(login_url='management_student_login')
+def accademic_details(request):
+    if request.method=='POST':
+        semester=request.POST.get('semester')
+        degree=request.POST.get('degree')
+        course_type=request.POST.get('course_type')
+        course_dur=request.POST.get('course_dur')        
+        acc_info,created=acc_details.objects.update_or_create(
+            user=request.user,
+            defaults={
+                'semster':semester,
+                'degree':degree,
+                'course_type':course_type,
+                'course_dur':course_dur,
+            }
+        )
+        if created:
+            messages.success(request,"Academic details Added")
+        else:
+            messages.error(request,"details Updated")
+            
+    context={
+        'created': created,
+        'acc_info':acc_info,
+    }
+    return render(request,'portfolio/student_mg_page.html',context)
+
+def logout_page(request):
+    logout(request)
+    return redirect('management_student_login')
+>>>>>>> a651631 (Initial commit: add Django project files)

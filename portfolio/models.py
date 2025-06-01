@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser,PermissionsMixin,BaseUserManager
+<<<<<<< HEAD
+=======
+from django.conf import settings
+>>>>>>> a651631 (Initial commit: add Django project files)
 
 # Create your models here.
 
@@ -15,6 +19,7 @@ class contactus(models.Model):
 
 #create custom signup
 class CustomUserManager(BaseUserManager):
+<<<<<<< HEAD
     def create_user(self,name=None,clg_roll=None,clg_reg=None,email=None,password=None,s_name=None,s_id=None):
         
          # Only validate clg_roll if it's a student
@@ -25,10 +30,25 @@ class CustomUserManager(BaseUserManager):
             name=name,
             clg_roll=clg_roll,
             clg_reg=clg_reg,
+=======
+    def create_user(self, name=None, clg_roll=None, clg_reg=None, email=None, password=None, s_name=None, s_id=None):
+        if not clg_roll and not s_id:
+            raise ValueError("Either Student Roll or Staff ID is required")
+
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        email = self.normalize_email(email)
+        user = self.model(
+            name=name,
+            clg_roll=clg_roll or 'ADMIN',
+            clg_reg=clg_reg or 'ADMIN',
+>>>>>>> a651631 (Initial commit: add Django project files)
             email=email,
             s_name=s_name,
             s_id=s_id,
         )
+<<<<<<< HEAD
         user.set_password(password) 
         user.save(using=self._db)
         return user
@@ -39,6 +59,30 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+=======
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password, **extra_fields):
+        # Provide defaults for required fields that are missing
+        extra_fields.setdefault('name', 'Admin')
+        extra_fields.setdefault('clg_roll', 'ADMIN')
+        extra_fields.setdefault('clg_reg', 'ADMIN')
+        extra_fields.setdefault('s_name', None)
+        extra_fields.setdefault('s_id', None)
+
+        return self.create_user(
+            name=extra_fields.get('name'),
+            clg_roll=extra_fields.get('clg_roll'),
+            clg_reg=extra_fields.get('clg_reg'),
+            email=email,
+            password=password,
+            s_name=extra_fields.get('s_name'),
+            s_id=extra_fields.get('s_id')
+        )
+
+>>>>>>> a651631 (Initial commit: add Django project files)
 class CustomUser(AbstractUser,PermissionsMixin):
     username=None
     name=models.CharField(max_length=30,blank=True,null=True)
@@ -52,11 +96,32 @@ class CustomUser(AbstractUser,PermissionsMixin):
     
     
     is_active = models.BooleanField(default=True)
+<<<<<<< HEAD
     is_staff = models.BooleanField(default=False)
+=======
+    is_staff = models.BooleanField(default=True)
+>>>>>>> a651631 (Initial commit: add Django project files)
     
     objects=CustomUserManager()
     USERNAME_FIELD='email'
     REQUIRED_FIELDS = ['name']
     
     def __str__(self):
+<<<<<<< HEAD
         return f'{self.name}-{self.clg_roll}'
+=======
+        return f'{self.name}-{self.clg_roll}'
+    
+    
+class acc_details(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True)
+    semster=models.CharField(max_length=4)
+    degree=models.CharField(max_length=40)
+    course_type=models.CharField(max_length=20)
+    course_dur=models.CharField(max_length=10)
+    
+    def __str__(self):
+        return str(self.user)
+    
+    
+>>>>>>> a651631 (Initial commit: add Django project files)
